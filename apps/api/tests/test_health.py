@@ -1,3 +1,7 @@
+import os
+
+os.environ["APP_ENV"] = "test"
+
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -13,4 +17,3 @@ def test_health_returns_expected_payload() -> None:
         "status": "ok",
         "service": "government-cabinet-bid-agent-api",
     }
-
