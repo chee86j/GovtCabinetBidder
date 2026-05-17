@@ -12,8 +12,10 @@ from app.models import (
     BidType,
     IdMixin,
     LaborPartner,
+    LaborMaterialMatch,
     MaterialSupplier,
     PartnerStatus,
+    PricingBenchmark,
     SupplierType,
     TimestampMixin,
 )
@@ -117,3 +119,23 @@ def test_material_supplier_model_uses_expected_enums_and_defaults() -> None:
     assert ships_nationwide_column.default is not None
     assert status_column.nullable is False
     assert status_column.default is not None
+
+
+def test_labor_material_match_model_uses_expected_foreign_keys() -> None:
+    bid_column = LaborMaterialMatch.__table__.c["bid_id"]
+    labor_partner_column = LaborMaterialMatch.__table__.c["labor_partner_id"]
+    supplier_column = LaborMaterialMatch.__table__.c["supplier_id"]
+
+    assert LaborMaterialMatch.__tablename__ == "labor_material_matches"
+    assert list(bid_column.foreign_keys)[0].target_fullname == "bid_opportunities.id"
+    assert list(labor_partner_column.foreign_keys)[0].target_fullname == "labor_partners.id"
+    assert list(supplier_column.foreign_keys)[0].target_fullname == "material_suppliers.id"
+
+
+def test_pricing_benchmark_model_exposes_reference_storage_fields() -> None:
+    benchmark_name_column = PricingBenchmark.__table__.c["benchmark_name"]
+    published_amount_column = PricingBenchmark.__table__.c["published_amount"]
+
+    assert PricingBenchmark.__tablename__ == "pricing_benchmarks"
+    assert benchmark_name_column.nullable is False
+    assert published_amount_column.nullable is True
