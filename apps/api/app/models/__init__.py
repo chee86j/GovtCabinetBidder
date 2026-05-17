@@ -1,12 +1,17 @@
 """Shared SQLAlchemy model primitives for the API."""
 
-from app.models.enums import BidStatus, BidType, PartnerStatus, SupplierType
+from app.models.bid_opportunity import BidOpportunity
+from app.models.enums import BidStatus, BidType, PartnerStatus, SupplierType, build_enum
+from app.models.labor_partner import LaborPartner
 from app.models.mixins import IdMixin, TimestampMixin
 
 __all__ = [
+    "BidOpportunity",
     "BidStatus",
     "BidType",
+    "build_enum",
     "IdMixin",
+    "LaborPartner",
     "PartnerStatus",
     "SupplierType",
     "TimestampMixin",

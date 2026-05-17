@@ -2,9 +2,23 @@ from __future__ import annotations
 
 from enum import Enum
 
+from sqlalchemy import Enum as SqlAlchemyEnum
+
 
 class StrEnum(str, Enum):
     """String-valued enum base for API and ORM interoperability."""
+
+
+def build_enum(enum_type: type[StrEnum], name: str) -> SqlAlchemyEnum:
+    """Builds a SQLAlchemy enum that persists business-facing string values."""
+
+    return SqlAlchemyEnum(
+        enum_type,
+        name=name,
+        native_enum=False,
+        values_callable=lambda members: [member.value for member in members],
+        validate_strings=True,
+    )
 
 
 class BidType(StrEnum):

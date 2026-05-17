@@ -2,10 +2,20 @@ from __future__ import annotations
 
 import uuid
 
+from sqlalchemy import Enum
 from sqlalchemy.sql.schema import Column
 
 from app.db.base import Base
-from app.models import BidStatus, BidType, IdMixin, PartnerStatus, SupplierType, TimestampMixin
+from app.models import (
+    BidOpportunity,
+    BidStatus,
+    BidType,
+    IdMixin,
+    LaborPartner,
+    PartnerStatus,
+    SupplierType,
+    TimestampMixin,
+)
 
 
 class ExampleModel(IdMixin, TimestampMixin, Base):
@@ -65,3 +75,28 @@ def test_shared_enums_expose_expected_values() -> None:
         "plumbing_appliance_supplier",
         "other",
     ]
+
+
+def test_bid_opportunity_model_uses_shared_enums_and_defaults() -> None:
+    status_column = BidOpportunity.__table__.c["status"]
+    bid_type_column = BidOpportunity.__table__.c["bid_type"]
+
+    assert BidOpportunity.__tablename__ == "bid_opportunities"
+    assert isinstance(status_column.type, Enum)
+    assert isinstance(bid_type_column.type, Enum)
+    assert list(status_column.type.enums) == [member.value for member in BidStatus]
+    assert list(bid_type_column.type.enums) == [member.value for member in BidType]
+    assert status_column.nullable is False
+    assert status_column.default is not None
+
+
+def test_labor_partner_model_defaults_match_expected_values() -> None:
+    agreement_signed_column = LaborPartner.__table__.c["agreement_signed"]
+    status_column = LaborPartner.__table__.c["status"]
+
+    assert LaborPartner.__tablename__ == "labor_partners"
+    assert agreement_signed_column.nullable is False
+    assert agreement_signed_column.default is not None
+    assert status_column.nullable is False
+    assert list(status_column.type.enums) == [member.value for member in PartnerStatus]
+    assert status_column.default is not None
