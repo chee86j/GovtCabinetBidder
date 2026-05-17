@@ -12,6 +12,7 @@ from app.models import (
     BidType,
     IdMixin,
     LaborPartner,
+    MaterialSupplier,
     PartnerStatus,
     SupplierType,
     TimestampMixin,
@@ -99,4 +100,20 @@ def test_labor_partner_model_defaults_match_expected_values() -> None:
     assert agreement_signed_column.default is not None
     assert status_column.nullable is False
     assert list(status_column.type.enums) == [member.value for member in PartnerStatus]
+    assert status_column.default is not None
+
+
+def test_material_supplier_model_uses_expected_enums_and_defaults() -> None:
+    supplier_type_column = MaterialSupplier.__table__.c["supplier_type"]
+    status_column = MaterialSupplier.__table__.c["status"]
+    ships_nationwide_column = MaterialSupplier.__table__.c["ships_nationwide"]
+
+    assert MaterialSupplier.__tablename__ == "material_suppliers"
+    assert isinstance(supplier_type_column.type, Enum)
+    assert isinstance(status_column.type, Enum)
+    assert list(supplier_type_column.type.enums) == [member.value for member in SupplierType]
+    assert list(status_column.type.enums) == [member.value for member in PartnerStatus]
+    assert ships_nationwide_column.nullable is False
+    assert ships_nationwide_column.default is not None
+    assert status_column.nullable is False
     assert status_column.default is not None
